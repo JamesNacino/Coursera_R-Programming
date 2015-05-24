@@ -1,6 +1,7 @@
+##Set this as working directory for local computer
 #setwd("C:\\Users\\james\\SkyDrive\\Data Science\\DataScience_Coursera\\R Programming\\Getting and Cleaning Data-Project")
 
-##Training Data
+##Training Data (step 1: merge training and test data)
 subject_train <- read.table("./UCI HAR Dataset/train/subject_train.txt", header=FALSE) 
 x_train <- read.table("./UCI HAR Dataset/train/x_train.txt", header=FALSE) 
 y_train <- read.table("./UCI HAR Dataset/train/y_train.txt", header=FALSE) 
@@ -17,7 +18,7 @@ test_dataset <- cbind(subject_test, x_test, y_test)
 ##Combined training and test datasets
 combined_data <- rbind(training_dataset, test_dataset)
 
-##Read the labels
+##Read the labels (step 2:Extracts only the measurements on the mean and standard deviation for each measurement.)
 features <- read.table("./UCI HAR Dataset/features.txt", header=FALSE, colClasses="character")
 labels <- features[,2]
 
@@ -46,6 +47,7 @@ location_valid_labels2 <- grep("mean|std", labels)
 combined_data <- combined_data[,location_valid_labels2]
 
 ##Change the column names in the 'combined_data' dataset
+#(Step 3 & 4: Use descriptive activity names and label the variables for the dataset)
 labels2 <- labels2[1:78]
 colnames(combined_data) <- "Activities"
 colnames(combined_data)[2:79] <- labels2
@@ -59,11 +61,11 @@ combined_data$Activities[combined_data$Activities == 4] <- "sitting"
 combined_data$Activities[combined_data$Activities == 5] <- "standing"
 combined_data$Activities[combined_data$Activities == 6] <- "laying"
 
-##Get the mean for each variable given all six activities
+##Get the mean for each variable given all six activities (step 5: Given the variable, get the mean for each activity)
 #Use split on data frame, 'combined_data', and separate the column, 'Activities'
 final_mean <- split(combined_data, combined_data$Activities)
 final_dataset <- lapply(final_mean, function(combined_data) colMeans(combined_data[,2:79]))
 final_data <- data.frame(final_dataset)
-
+final_data
 
 
